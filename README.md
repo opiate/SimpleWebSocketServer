@@ -114,9 +114,28 @@ handleMessage: gets called when there is an incoming message from the client end
  - self.data: bytearray (BINARY frame) or unicode string payload (TEXT frame)  
  - self.request: HTTP details from the WebSocket handshake (refer to BaseHTTPRequestHandler)
 
+handlePing: gets called when there is an incoming PING request from the client endpoint
+ - self.address: TCP address port tuple of the endpoint
+ - self.opcode: always PING
+ - self.data: bytearray payload
+ - self.request: HTTP details from the WebSocket handshake (refer to BaseHTTPRequestHandler)
+ - **You must send the PONG reply yourself with sendPong(self.data) [or other data] if you define this function**
+
+handlePong: gets called when there is an incoming PONG reply from the client endpoint
+ - self.address: TCP address port tuple of the endpoint
+ - self.opcode:	always PONG
+ - self.data: bytearray payload
+ - self.request: HTTP details from the WebSocket handshake (refer to BaseHTTPRequestHandler)
+
 sendMessage: send some text or binary data to the client endpoint
  - sending data as a unicode object will send a TEXT frame
  - sending data as a bytearray object will send a BINARY frame
+
+sendPing: send a PING request to the client endpoint
+ - send data as a bytearray object
+
+sendPong: send a PONG reply to the client endpoint
+ - send data as a bytearray object
 
 sendClose: send close frame to endpoint
 

@@ -138,6 +138,19 @@ class WebSocket(object):
       """
       pass
 
+   def handlePing(self):
+      """
+          Called when a websocket server gets a Ping frame from a client.
+          If overridden, make sure to send the PONG reply
+      """
+      self.sendPong(self.data)
+
+   def handlePong(self):
+     """
+         Called when a websocket server gets a Pong frame from a client.
+     """
+     pass
+
    def _handlePacket(self):
       if self.opcode == CLOSE:
          pass
@@ -229,10 +242,10 @@ class WebSocket(object):
               self.frag_buffer = None
 
           elif self.opcode == PING:
-              self._sendMessage(False, PONG, self.data)
+              self.handlePing()
 
           elif self.opcode == PONG:
-              pass
+              self.handlePong()
 
           else:
               if self.frag_start is True:
@@ -400,6 +413,20 @@ class WebSocket(object):
       if _check_unicode(data):
          opcode = TEXT
       self._sendMessage(False, opcode, data)
+
+   def sendPing(self, data=None):
+      """
+          Send websocket Ping
+      """
+      if not data:
+          data = bytearray()
+      self._sendMessage(False, PING, data)
+
+   def sendPong(self, data):
+      """
+           Send websocket Pong
+      """
+      self._sendMessage(False, PONG, data)
 
 
    def _sendMessage(self, fin, opcode, data):
